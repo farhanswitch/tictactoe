@@ -51,21 +51,70 @@ function playersTurn(){
 }
 
 function computersTurn(){
+    let move
+    let bestScore = -Infinity
     for(let y = 0;y<9;y++){
-        if(cellElements[y].getAttribute('class') == 'cell'){
-            cellElements[y].classList.add(CIRCLE_CLASS)
-            boardCondition[y] = CIRCLE_CLASS
-            break
+        if(boardCondition[y] == null){
+                boardCondition[y] = CIRCLE_CLASS
+                let score = minimax(boardCondition, 0, false)
+                boardCondition[y] = null
+                if(score > bestScore){
+                    bestScore = score
+                    move = y
+                }
         }
         
     }
-    let result = winningCondition()
+    boardCondition[move] = CIRCLE_CLASS
+    cellElements[move].classList.add(CIRCLE_CLASS)
+    let result = winningCondition(boardCondition)
     if(result){
         theEnd(result)
         return null
     }
     playersTurn()
     
+}
+
+let scores = {
+    [X_CLASS]:-10,
+    [CIRCLE_CLASS]:10,
+    draw:0
+}
+function minimax(boards,depth,isMaximizing){
+    let result = winningCondition(boards)
+    if(result != null){
+        return scores[result]
+    }
+
+    if(isMaximizing){
+        let bestScore = -Infinity
+        let score
+        for(let i = 0;i < 9; i++){
+            if(boards[i] == null){
+                boards[i] = CIRCLE_CLASS
+                score = minimax(boards,depth+1,false);  
+                boards[i]=null
+                if(score > bestScore){
+                    bestScore = score
+                }
+            }
+        }
+        return bestScore
+    }else{
+        let bestScore = Infinity
+        for(let i = 0 ; i < 9; i++){
+            if(boards[i]== null){
+                boards[i] = X_CLASS
+                let score = minimax(boards,depth+1,true)
+                boards[i] = null
+                if(score<bestScore){
+                    bestScore = score
+                }
+            }
+        }
+        return bestScore
+    }
 }
 
 function theEnd(result){
@@ -97,7 +146,7 @@ function handleClick(e){
     })
     removeClick()
      //check winning condition
-     let result = winningCondition()
+     let result = winningCondition(boardCondition)
      if(result){
          theEnd(result)
          return null
@@ -107,33 +156,34 @@ function handleClick(e){
 }
 
 
-function winningCondition(){
-    if(boardCondition[0] == boardCondition[1] && boardCondition[1] == boardCondition[2] && boardCondition [0] != null){
-        return boardCondition[0]
+function winningCondition(board){
+    if(board[0] == board[1] && board[1] == board[2] && board [0] != null){
+        return board[0]
     }
-    else if(boardCondition[3] == boardCondition[4] && boardCondition[4] == boardCondition[5] && boardCondition [3] != null){
-        return boardCondition[3]
+    else if(board[3] == board[4] && board[4] == board[5] && board [3] != null){
+        return board[3]
     }
-    else if(boardCondition[6] == boardCondition[7] && boardCondition[7] == boardCondition[8] && boardCondition [8] != null){
-        return boardCondition[8]
+    else if(board[6] == board[7] && board[7] == board[8] && board [8] != null){
+        return board[8]
     }
-    else if(boardCondition[0] == boardCondition[3] && boardCondition[3] == boardCondition[6] && boardCondition [6] != null){
-        return boardCondition[6]
+    else if(board[0] == board[3] && board[3] == board[6] && board [6] != null){
+        return board[6]
     }
-    else if(boardCondition[1] == boardCondition[4] && boardCondition[4] == boardCondition[7] && boardCondition [7] != null){
-        return boardCondition[7]
+    else if(board[1] == board[4] && board[4] == board[7] && board [7] != null){
+        return board[7]
     }
-    else if(boardCondition[2] == boardCondition[5] && boardCondition[5] == boardCondition[8] && boardCondition [8] != null){
-        return boardCondition[8]
+    else if(board[2] == board[5] && board[5] == board[8] && board [8] != null){
+        return board[8]
     }
-    else if(boardCondition[0] == boardCondition[4] && boardCondition[4] == boardCondition[8] && boardCondition [8] != null){
-        return boardCondition[8]
+    else if(board[0] == board[4] && board[4] == board[8] && board [8] != null){
+        return board[8]
     }
-    else if(boardCondition[2] == boardCondition[4] && boardCondition[4] == boardCondition[6] && boardCondition [6] != null){
-        return boardCondition[6]
+    else if(board[2] == board[4] && board[4] == board[6] && board [6] != null){
+        return board[6]
     }
     let notEmpty =  true
-    boardCondition.forEach(data=>{
+    console.log(board)
+    board.forEach(data=>{
         if(data == null){
             notEmpty = false
         }
