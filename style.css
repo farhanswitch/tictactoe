@@ -1,3 +1,9 @@
+@font-face {
+    font-family: "inter";
+
+    src: url('./fonts/Inter-ExtraLight.ttf') format("truetype")
+}
+
 *,*::before,*::after{
     box-sizing: border-box;
 }
@@ -6,8 +12,24 @@
     --mark-size: calc(var(--cell-size)* .9)
 }
 body{
+    font-family: 'inter',Arial, Helvetica, sans-serif;
     margin: 0;
     padding: 0;
+    position: relative;
+}
+h2{
+    color: #444;
+    position: absolute;
+    top: 10px;
+    width: 100vw;
+    text-align: center;
+}
+h4{
+    color: #555;
+    position: absolute;
+    top: 35px;
+    width: 100vw;
+    text-align: center;
 }
 .board{
     width: 100vw;

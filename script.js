@@ -10,11 +10,13 @@ let players = {
     [X_CLASS]:'Player',
     [CIRCLE_CLASS]:'Computer'
 }
+let first = true
 
 startGame()
 restartBtn.addEventListener('click',()=>{
     winningMessage.classList.remove('show')
     board.style.filter = 'blur(0)'
+    first = true
     startGame()
 })
 
@@ -42,26 +44,47 @@ function playersTurn(){
             cellElements[index].addEventListener('click',
           handleClick,{once:true})
         }
-    })
-     
-     
-      
-      
-      
+    })  
 }
 
 function computersTurn(){
+    
+    if (first){
+        
+        for(let z = 0;z<9;z++){
+            continue
+            if(boardCondition[z]==null){
+                if(boardCondition[0]==X_CLASS){
+                    boardCondition[4]=CIRCLE_CLASS
+                    cellElements[4].classList.add(CIRCLE_CLASS)
+                }else{
+                boardCondition[z] = CIRCLE_CLASS
+                cellElements[z].classList.add(CIRCLE_CLASS)}
+                first = false
+                let result = winningCondition(boardCondition)
+                if(result){
+                    theEnd(result)
+                    return null
+                }
+                playersTurn()
+                return null
+            }
+        }
+        
+    }
     let move
     let bestScore = -Infinity
     for(let y = 0;y<9;y++){
         if(boardCondition[y] == null){
-                boardCondition[y] = CIRCLE_CLASS
+              
+               boardCondition[y] = CIRCLE_CLASS
                 let score = minimax(boardCondition, 0, false)
                 boardCondition[y] = null
                 if(score > bestScore){
                     bestScore = score
                     move = y
                 }
+            
         }
         
     }
@@ -145,12 +168,14 @@ function handleClick(e){
        }
     })
     removeClick()
+    
      //check winning condition
      let result = winningCondition(boardCondition)
      if(result){
          theEnd(result)
          return null
      }
+     
     computersTurn()
    
 }
@@ -182,7 +207,7 @@ function winningCondition(board){
         return board[6]
     }
     let notEmpty =  true
-    console.log(board)
+    // console.log(board)
     board.forEach(data=>{
         if(data == null){
             notEmpty = false
